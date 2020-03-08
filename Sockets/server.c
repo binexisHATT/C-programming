@@ -15,7 +15,7 @@ int main () {
     int serv_soc;
     serv_soc = socket( AF_INET, SOCK_STREAM, 0 );
     
-    //**| defining sockets address
+    //**| defining socket address
     
     struct sockaddr_in serv_addr;
     serv_addr.sin_family = AF_INET;
