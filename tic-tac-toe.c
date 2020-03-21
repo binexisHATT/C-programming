@@ -37,13 +37,14 @@ status showGrid(int position, bool player);
 void startGame();
 int promptUser();
 // status checkStatus(char gridValue[][]);
-void endGame(status check, bool player);
+char endGame(status check, bool player);
 
 
 
 int main() {
 	bool player = true;
 	int position = 0;
+	char playAgain;
 	status game;
 
 	startGame(); 
@@ -52,8 +53,12 @@ int main() {
 		position = promptUser();
 		player = !player;
 	} while(game != VICTORY || game != TIE);
-	endGame(game, player);
-	return 0;
+	playAgain = endGame(game, player);
+
+	if(playAgain == 'Y' || playAgain == 'y')      /// start game over
+		main()
+	else
+		return 0;
 }
 
 
@@ -118,7 +123,9 @@ int promptUser() {
 // status checkStatus(char gridValue[][]) {
 // }
 
-void endGame(status check, bool player) {
+char endGame(status check, bool player) {
+	char playAgain;
+	
 	if(check == VICTORY && player == true)
 		printf("Victory is yours, player X");
 
@@ -127,4 +134,9 @@ void endGame(status check, bool player) {
 
 	else
 		printf("A tie!");
+
+	printf("Would you like to play again? (Y/n): ");
+	scanf("%c", &playAgain);
+
+	return playAgain;
 }
