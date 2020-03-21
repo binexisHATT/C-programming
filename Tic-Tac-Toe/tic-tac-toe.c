@@ -5,6 +5,8 @@
   @brief        Tic tac toe implementation
 *******************************************************************************/
 
+/* Compilation: gcc tic-tac-toe.c -o game or clang tic-tac-toe.c -o game */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
