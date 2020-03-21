@@ -1,1 +1,1 @@
-# A Very Basic Tic Tac Toe Game written in C
+# My C version of Tic Tac Toe
