@@ -52,7 +52,7 @@ int main() {
 /*
  * Function: startGame
  * -----------------------
- * Clears screen and displays welcome message.
+ * Clears screen and begins the game
  *
 */
 void startGame() {
@@ -173,6 +173,7 @@ status showGrid(int position, bool player) {
  * -----------------------
  * Prompts user for valid number within game grid.
  *
+ * player: bool that will determine the current player( X or O ) 
 */
 int promptPlayers(bool player) {
 	int selection = 0;
