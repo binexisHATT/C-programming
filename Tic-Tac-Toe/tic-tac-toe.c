@@ -21,6 +21,7 @@
 
 #define CHOICE_X 'X'
 #define CHOICE_O 'O'
+#define MAX_ATTEMPTS 9
 
 
 // will be used to test the 
@@ -32,46 +33,66 @@ typedef enum {
 } status;
 
 
-/*      Functions Declarations      */
+/*         Functions Declarations        */
 status showGrid(int position, bool player);
 void startGame();
-int promptUser();
-// status checkStatus(char gridValue[][]);
-char endGame(status check, bool player);
-
+int promptPlayers(bool player);
+status checkVictory(char gridValues[][3]);
+void endGame(status check, bool player);
 
 
 int main() {
-	bool player = true;
-	int position = 0;
-	char playAgain;
-	status game;
-
-	startGame(); 
-	do {
-		game = showGrid(position, player);
-		position = promptUser();
-		player = !player;
-	} while(game != VICTORY || game != TIE);
-	playAgain = endGame(game, player);
-
-	if(playAgain == 'Y' || playAgain == 'y')      /// start game over
-		main()
-	else
-		return 0;
+	startGame();
+	return 0;
 }
 
 
 /*
- * Function: showGrid
+ * Function: startGame
  * -----------------------
- * Displays welcome message
+ * Clears screen and displays welcome message.
  *
 */
+void startGame() {
+	system("clear");
+	printf(BLUE "      Welcome to Tic Tac Toe by: Alexis Rodriguez\n\n" RESET);
+
+	bool player = false;
+	int position = 0, attempts = 0;
+	char playAgain;
+	status game;
+
+	do {
+		player = !player;
+		game = showGrid(position, player);
+
+		if(game == VICTORY)
+			break;
+
+		position = promptPlayers(player);
+		system("clear");
+		attempts++;
+	} while(attempts < MAX_ATTEMPTS);
+
+	if(attempts == MAX_ATTEMPTS)
+		game = TIE;
+
+	endGame(game, player);
+}
+
+/*
+ * Function: showGrid
+ * -----------------------
+ * Displays the tic-tac-toe grid and alters the grid as
+ * users provide their choices on the grid.
+ * 
+ * position: value on the grid from 1-9
+ * player: the current players whose turn it is
+*/
 status showGrid(int position, bool player) {
-	static char marker;
-	status v = CONTINUE;
-	int grid[3][3] = {
+	char marker;
+	status check = CONTINUE;
+	static char grid[3][3] = {
 
 		{'1', '2', '3'},
 		{'4', '5', '6'},
@@ -79,14 +100,16 @@ status showGrid(int position, bool player) {
 	};
 
 	if(player == true)
-		marker = CHOICE_X;
-	else
 		marker = CHOICE_O;
+	else
+		marker = CHOICE_X;
 
 	// checking value of position
 	// and changing value in 2-d grid
 	// to X or O
 	switch(position) {
+		case 0:
+			break;
 		case 1:
 			grid[0][0] = marker;
 			break;
@@ -114,11 +137,11 @@ status showGrid(int position, bool player) {
 		case 9:
 			grid[2][2] = marker;
 			break;
-
 		default:
-			printf("Invalid position!");
+			printf("Invalid position!\n");
 			exit(EXIT_SUCCESS);
 	}
+
 
 	/*                   THE GRID                     */
 	printf(YELLOW "\n\n\n\t\t  %c  " RESET, grid[0][0]);
@@ -139,33 +162,26 @@ status showGrid(int position, bool player) {
 	printf(RED "|" RESET);
 	printf(YELLOW "  %c  \n\n\n" RESET, grid[2][2]);
 
-	// call checkStatus to check if victory or tie
-
-	return v;
+	return checkVictory(grid);
 }
 
 
 /*
- * Function: startGame
+ * Function: promptPlayers
  * -----------------------
- * Displays welcome message
+ * Prompts user for valid number within game grid.
  *
 */
-void startGame() {
-	system("clear");
-	printf(BLUE "\t       Welcome to tic tac toe!\n\n" RESET);
-}
-
-
-/*
- * Function: promptUser
- * -----------------------
- * Displays welcome message
- *
-*/
-int promptUser() {
+int promptPlayers(bool player) {
 	int selection = 0;
-	printf("Choose a number from 1-9 (0 to exit program):> ");
+	char whichPlayer;
+
+	if(player)
+		whichPlayer = CHOICE_X;
+	else
+		whichPlayer = CHOICE_O;
+
+	printf("Player %c, pick a number from 1-9 (0 to exit program):> ", whichPlayer);
 	scanf("%d", &selection);
 
 	if(selection == 0)
@@ -175,35 +191,69 @@ int promptUser() {
 }
 
 /*
- * Function: checkStatus
+ * Function: checkVictory
  * -----------------------
- * Displays welcome message
- *
+ * Checks if a player has won.
+ * gridValues: 2d dimensional array containing the values of the current grid
 */
-// status checkStatus(char gridValue[][]) {
-// }
+status checkVictory(char gridValues[][3]) {
+	status determine = CONTINUE;
+
+	// checking horizontal victories
+	if((gridValues[0][0] == CHOICE_X && gridValues[0][1] == CHOICE_X && gridValues[0][2] == CHOICE_X) ||
+		(gridValues[0][0] == CHOICE_O && gridValues[0][1] == CHOICE_O && gridValues[0][2] == CHOICE_O))
+		determine = VICTORY;
+
+	else if((gridValues[1][0] == CHOICE_X && gridValues[1][1] == CHOICE_X && gridValues[1][2] == CHOICE_X) ||
+		(gridValues[1][0] == CHOICE_O && gridValues[1][1] == CHOICE_O && gridValues[1][2] == CHOICE_O))
+		determine = VICTORY;
+
+	else if((gridValues[2][0] == CHOICE_X && gridValues[2][1] == CHOICE_X && gridValues[2][2] == CHOICE_X) ||
+		(gridValues[2][0] == CHOICE_O && gridValues[2][1] == CHOICE_O && gridValues[2][2] == CHOICE_O))
+		determine = VICTORY;
+
+	// checking diagonal victories
+	else if((gridValues[0][0] == CHOICE_X && gridValues[1][1] == CHOICE_X && gridValues[2][2] == CHOICE_X) ||
+		(gridValues[0][0] == CHOICE_O && gridValues[1][1] == CHOICE_O && gridValues[2][2] == CHOICE_O))
+		determine = VICTORY;
+
+	else if((gridValues[0][2] == CHOICE_X && gridValues[1][1] == CHOICE_X && gridValues[2][0] == CHOICE_X) ||
+		(gridValues[0][2] == CHOICE_O && gridValues[1][1] == CHOICE_O && gridValues[2][0] == CHOICE_O))
+		determine = VICTORY;
+
+	// check vertical victories
+	else if((gridValues[0][0] == CHOICE_X && gridValues[1][0] == CHOICE_X && gridValues[2][0] == CHOICE_X) ||
+		(gridValues[0][0] == CHOICE_O && gridValues[1][0] == CHOICE_O && gridValues[2][0] == CHOICE_O))
+		determine = VICTORY;
+
+	else if((gridValues[0][1] == CHOICE_X && gridValues[1][1] == CHOICE_X && gridValues[2][1] == CHOICE_X) ||
+		(gridValues[0][1] == CHOICE_O && gridValues[1][1] == CHOICE_O && gridValues[2][1] == CHOICE_O))
+		determine = VICTORY;
+
+	else if((gridValues[0][2] == CHOICE_X && gridValues[1][2] == CHOICE_X && gridValues[2][2] == CHOICE_X) ||
+		(gridValues[0][2] == CHOICE_O && gridValues[1][2] == CHOICE_O && gridValues[2][2] == CHOICE_O))
+		determine = VICTORY;
+
+	return determine;
+}
 
 
 /*
  * Function: endGame
  * -----------------------
- * Displays welcome message
- *
+ * Displays which user won the game and asks the users if they would
+ * like to continue playing the game.
+ * 
+ * check: status enum type containing the games results
+ * player: the player who won the game determined by boolean
 */
-char endGame(status check, bool player) {
-	char playAgain;
-	
-	if(check == VICTORY && player == true)
-		printf("Victory is yours, player X");
+void endGame(status check, bool player) {
+	if(check == VICTORY && player == false)
+		printf(BLUE "Victory is yours, player X!\n" RESET);
 
-	else if(check == VICTORY && player == false)
-		printf("Victory is yours, player O");
+	else if(check == VICTORY && player == true)
+		printf(BLUE "Victory is yours, player O!\n" RESET);
 
 	else
-		printf("A tie!");
-
-	printf("Would you like to play again? (Y/n): ");
-	scanf("%c", &playAgain);
-
-	return playAgain;
+		printf(BLUE "A tie!\n" RESET);
 }
