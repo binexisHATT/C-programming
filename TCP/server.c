@@ -6,15 +6,16 @@
 #include <arpa/inet.h>
 
 int main() {
+	printf("[+] Starting TCP Server...\n");
 	int sockfd, insockfd;
-	struct sockaddr_in server_addr, client addr;
+	struct sockaddr_in server_addr, client_addr;
 	char buffer[100];
 
 	// Create socket
-	int sockfd = socket(AF_INET, SOCK_STREAM);
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
 	// Set the server socket options
-	memset(&server_addr, 0, sizeof(sockaddr_in));
+	memset(&server_addr, 0, sizeof(struct sockaddr_in));
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(1234);
 
@@ -24,7 +25,7 @@ int main() {
 	int client_len = sizeof(client_addr);
 	// Listen for incoming connections
 	while (1) {
-		insockfd = accept(sockfd, (struct sockaddr *)&client_addr, client_len);
+		insockfd = accept(sockfd, (struct sockaddr *)&client_addr, &client_len);
 
 		// if fork() returns 0, this is a child process
 		if(fork() == 0) {
@@ -33,7 +34,7 @@ int main() {
 			// Read data
 			memset(buffer, 0, sizeof(buffer));
 			int len = read(insockfd, buffer, 100);
-			print("Received %d bytes:\n%s\n", len, buffer);
+			printf("Received %d bytes:\n%s\n", len, buffer);
 			close(insockfd);
 			return 0;
 		} else {

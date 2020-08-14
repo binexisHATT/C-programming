@@ -5,6 +5,9 @@
 #include <netinet/ip.h>
 #include <arpa/inet.h>
 
+#define SERVER_IP "192.168.33.138"
+#define SERVER_PORT 1234
+
 int main() {
     printf("[+] Running TCP Client Program...");
 
@@ -15,8 +18,8 @@ int main() {
     struct sockaddr_in dest;
     memset(&dest, 0, sizeof(struct sockaddr_in));
     dest.sin_family = AF_INET;
-    dest.sin_addr.s_addr = inet_addr("192.168.33.138");
-    dest.sin_port = htons(1234);
+    dest.sin_addr.s_addr = inet_addr(SERVER_IP);
+    dest.sin_port = htons(SERVER_PORT);
 
     // Connect to destination server
     connect(sockfd, (struct sockaddr *)&dest, sizeof(struct sockaddr_in));
