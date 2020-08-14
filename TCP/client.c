@@ -9,7 +9,8 @@ int main() {
     printf("[+] Running TCP Client Program...");
 
     // Create socket
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
     // Set the destination server information
     struct sockaddr_in dest;
     memset(&dest, 0, sizeof(struct sockaddr_in));
@@ -18,12 +19,11 @@ int main() {
     dest.sin_port = htons(1234);
 
     // Connect to destination server
-    connect(sock, (struct sockaddr *)&dest, sizeof(struct sockaddr_in));
-    
+    connect(sockfd, (struct sockaddr *)&dest, sizeof(struct sockaddr_in));
     // Write data
     char *first_msg = "Hello Server\n";
     char *second_msg = "Hello Again\n";
-    write(sock, first_msg, strlen(first_msg));
-    write(sock, second_msg, strlen(second_msg));
+    write(sockfd, first_msg, strlen(first_msg));
+    write(sockfd, second_msg, strlen(second_msg));
     return 0;
 }
