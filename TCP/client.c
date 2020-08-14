@@ -9,7 +9,7 @@
 #define SERVER_PORT 1234
 
 int main() {
-    printf("[+] Running TCP Client Program...");
+    printf("[+] Running TCP Client Program...\n");
 
     // Create socket
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
