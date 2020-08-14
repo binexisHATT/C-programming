@@ -22,13 +22,17 @@ int main() {
 	// Bind a socket to a port
 	bind(sockfd, (struct sockaddr *)&server_addr, sizeof(struct sockaddr_in));
 
+	// listen for incoming connections
+	listen(sockfd, 5);
 	int client_len = sizeof(client_addr);
-	// Listen for incoming connections
-	while (1) {
-		insockfd = accept(sockfd, (struct sockaddr *)&client_addr, &client_len);
 
+	// Accepting multiple connections
+	while (1)
+	{
+		insockfd = accept(sockfd, (struct sockaddr *)&client_addr, &client_len);
 		// if fork() returns 0, this is a child process
-		if(fork() == 0) {
+		if (fork() == 0)
+		{
 			close(sockfd);
 
 			// Read data
@@ -37,11 +41,11 @@ int main() {
 			printf("Received %d bytes:\n%s\n", len, buffer);
 			close(insockfd);
 			return 0;
-		} else {
+		}
+		else // Parent process
+		{
 			close(insockfd);
 		}
 	}
-
-	// Constructing server socket struct
 	return 0;
 }
